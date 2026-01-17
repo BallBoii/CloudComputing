@@ -3,6 +3,10 @@
 
 set -e  # Exit on error
 
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 echo "================================================"
 echo "Ansible Server Setup and Deployment Script"
 echo "================================================"
@@ -20,28 +24,50 @@ sudo pip3 install ansible
 # Step 3: Install AWS collections and dependencies
 echo ""
 echo "[3/6] Installing AWS collections and boto3..."
-pip3 install boto3 botocore
+pip3 install --user boto3 botocore
 ansible-galaxy collection install amazon.aws
 ansible-galaxy collection install community.mysql
 
-# Step 4: Configure AWS credentials
+# Step 4: Configure environment file
 echo ""
-echo "[4/6] Configuring AWS credentials..."
-echo "Please enter your AWS credentials:"
-read -p "AWS Access Key ID: " AWS_KEY
-read -sp "AWS Secret Access Key: " AWS_SECRET
-echo ""
-
-export AWS_ACCESS_KEY_ID="$AWS_KEY"
-export AWS_SECRET_ACCESS_KEY="$AWS_SECRET"
-
-# Add to bash profile for persistence
-cat >> ~/.bashrc << EOF
-
+echo "[4/6] Configuring .env file..."
+if [ ! -f .env ]; then
+    echo ".env file not found. Let's create it."
+    echo ""
+    echo "Please enter your AWS credentials:"
+    read -p "AWS Access Key ID: " AWS_KEY
+    read -sp "AWS Secret Access Key: " AWS_SECRET
+    echo ""
+    read -p "AWS Region [us-east-1]: " AWS_REGION
+    AWS_REGION=${AWS_REGION:-us-east-1}
+    
+    # Create .env file
+    cat > .env << EOF
 # AWS Credentials
-export AWS_ACCESS_KEY_ID="$AWS_KEY"
-export AWS_SECRET_ACCESS_KEY="$AWS_SECRET"
+AWS_ACCESS_KEY_ID=$AWS_KEY
+AWS_SECRET_ACCESS_KEY=$AWS_SECRET
+
+# AWS Region
+AWS_DEFAULT_REGION=$AWS_REGION
+
+# SSH Key Path
+ANSIBLE_SSH_PRIVATE_KEY=~/.ssh/ansibleSSH.pem
+
+# Ansible Configuration
+ANSIBLE_HOST_KEY_CHECKING=False
 EOF
+    
+    chmod 600 .env
+    echo ".env file created successfully!"
+else
+    echo ".env file already exists. Using existing configuration."
+fi
+
+# Load environment variables
+source .env
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
+export AWS_DEFAULT_REGION
 
 # Step 5: Setup SSH key
 echo ""
@@ -59,7 +85,6 @@ chmod 400 ~/.ssh/ansibleSSH.pem
 # Step 6: Test dynamic inventory
 echo ""
 echo "[6/6] Testing dynamic inventory..."
-cd /home/ec2-user/ansible
 ansible-inventory -i aws_ec2.yml --graph
 
 echo ""

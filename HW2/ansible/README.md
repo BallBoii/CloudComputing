@@ -2,18 +2,35 @@
 
 ## Initial Setup on Ansible Server
 
-### 1. Copy project files to Ansible Server
+### 1. Configure .env file locally
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit with your credentials
+nano .env
+```
+
+Add your AWS credentials:
+```env
+AWS_ACCESS_KEY_ID=your-access-key-here
+AWS_SECRET_ACCESS_KEY=your-secret-key-here
+AWS_DEFAULT_REGION=us-east-1
+ANSIBLE_SSH_PRIVATE_KEY=~/.ssh/ansibleSSH.pem
+```
+
+### 2. Copy project files to Ansible Server
 ```bash
 # From your local machine
 scp -i ~/.ssh/ansibleSSH.pem -r ./ansible ec2-user@<ANSIBLE_SERVER_IP>:~/
 ```
 
-### 2. SSH into Ansible Server
+### 3. SSH into Ansible Server
 ```bash
 ssh -i ~/.ssh/ansibleSSH.pem ec2-user@<ANSIBLE_SERVER_IP>
 ```
 
-### 3. Run the deployment setup script
+### 4. Run the deployment setup script
 ```bash
 cd ~/ansible
 chmod +x deploy.sh
