@@ -1,0 +1,71 @@
+---
+- name: Configure Web Server
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Update system packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+    - name: Install Apache HTTP Server
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+
+    - name: Install PHP and common modules
+      ansible.builtin.dnf:
+        name:
+          - php
+          - php-mysqlnd
+          - php-fpm
+          - php-json
+          - php-common
+        state: present
+
+    - name: Start and enable Apache
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Start and enable PHP-FPM
+      ansible.builtin.systemd:
+        name: php-fpm
+        state: started
+        enabled: yes
+
+    - name: Ensure web root directory exists
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        owner: apache
+        group: apache
+        mode: '0755'
+
+    - name: Copy index.php to web server
+      ansible.builtin.copy:
+        src: ../../index.php
+        dest: /var/www/html/index.php
+        owner: apache
+        group: apache
+        mode: '0644'
+      when: false  # Set to true when you want to deploy
+
+    - name: Copy styles.css to web server
+      ansible.builtin.copy:
+        src: ../../styles.css
+        dest: /var/www/html/styles.css
+        owner: apache
+        group: apache
+        mode: '0644'
+      when: false  # Set to true when you want to deploy
+
+    - name: Verify Apache is running
+      ansible.builtin.service_facts:
+
+    - name: Display Apache status
+      ansible.builtin.debug:
+        msg: "Apache is {{ ansible_facts.services['httpd.service'].state }}"
+      when: "'httpd.service' in ansible_facts.services"

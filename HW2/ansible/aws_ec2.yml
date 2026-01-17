@@ -1,0 +1,42 @@
+---
+plugin: amazon.aws.aws_ec2
+
+# AWS credentials (can also use environment variables or IAM role)
+aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+aws_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+
+regions:
+  - us-east-1  # Update with your region from terraform.tfvars
+
+# Filter to only get running instances
+filters:
+  instance-state-name: running
+  # Only get instances from this project
+  "tag:Name":
+    - Siege-Server
+    - Web-Server
+    - SQL-Server
+
+# Use instance tags to create groups
+keyed_groups:
+  # Group by Name tag
+  - key: tags.Name
+    prefix: ""
+    separator: ""
+
+# Create groups based on instance tags
+groups:
+  siege: "'Siege-Server' in tags.Name"
+  web: "'Web-Server' in tags.Name"
+  sql: "'SQL-Server' in tags.Name"
+
+# Host variables
+hostnames:
+  # Use public IP as hostname (use private_ip_address for internal)
+  - public-ip-address
+
+compose:
+  # Set ansible connection variables
+  ansible_host: public_ip_address
+  ansible_user: "'ec2-user'"
+  ansible_ssh_private_key_file: "'~/.ssh/ansibleSSH.pem'"

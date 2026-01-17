@@ -39,34 +39,6 @@ resource "aws_instance" "siege_server" {
   subnet_id     = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              dnf update -y
-              dnf groupinstall "Development Tools" -y || true
-              
-              dnf install -y \
-                git gcc make autoconf automake libtool pkgconfig \
-                openssl-devel zlib-devel perl perl-podlators
-              
-              cd /tmp
-              rm -rf siege
-              git clone https://github.com/JoeDog/siege.git
-              cd siege
-              
-              ./utils/bootstrap
-              ./configure --with-ssl=/usr
-              
-              make
-              make install
-              
-              # Update ldconfig to register new libraries
-              ldconfig
-              
-              # Verify installation
-              /usr/local/bin/siege --version
-
-              EOF
-
   tags = {
     Name = "Siege-Server"
   }
@@ -78,11 +50,6 @@ resource "aws_instance" "web_server" {
   key_name      = var.key_pair
   subnet_id     = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
-
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              EOF
 
   tags = {
     Name = "Web-Server"
@@ -96,20 +63,20 @@ resource "aws_instance" "sql_server" {
   subnet_id     = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo dnf update -y
-              sudo dnf install mariadb105-server -y
-              sudo systemctl enable mariadb
-              sudo systemctl start mariadb
-              sudo systemctl is-enabled mariadb
-
-              mysqladmin -u root password 'strongpassword'
-              mysql -uroot -p
-              EOF
-
   tags = {
     Name = "SQL-Server"
+  }
+}
+
+resource "aws_instance" "ansible_server" {
+  ami           = data.aws_ami.amazon_linux_2023.id
+  instance_type = var.instance_type
+  key_name      = var.key_pair
+  subnet_id     = data.aws_subnets.default.ids[0]
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
+  
+  tags = {
+    Name = "Ansible-Server"
   }
 }
 
