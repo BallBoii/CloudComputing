@@ -1,0 +1,19 @@
+---
+# Master playbook to configure all servers using roles
+- name: Configure Siege Server
+  hosts: siege
+  become: yes
+  roles:
+    - siege
+
+- name: Configure Web Server
+  hosts: web
+  become: yes
+  roles:
+    - webserver
+
+- name: Configure SQL Server
+  hosts: sql
+  become: yes
+  roles:
+    - sqlserver

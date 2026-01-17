@@ -1,0 +1,77 @@
+---
+# Main tasks for siege role
+- name: Update system packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: Install Development Tools group
+  ansible.builtin.dnf:
+    name: "@Development Tools"
+    state: present
+  ignore_errors: yes
+
+- name: Install required packages for Siege
+  ansible.builtin.dnf:
+    name:
+      - git
+      - gcc
+      - make
+      - autoconf
+      - automake
+      - libtool
+      - pkgconfig
+      - openssl-devel
+      - zlib-devel
+      - perl
+      - perl-podlators
+    state: present
+
+- name: Remove existing siege directory if present
+  ansible.builtin.file:
+    path: /tmp/siege
+    state: absent
+
+- name: Clone Siege repository
+  ansible.builtin.git:
+    repo: https://github.com/JoeDog/siege.git
+    dest: /tmp/siege
+    clone: yes
+
+- name: Run bootstrap script
+  ansible.builtin.command:
+    cmd: ./utils/bootstrap
+    chdir: /tmp/siege
+  args:
+    creates: /tmp/siege/configure
+
+- name: Configure Siege
+  ansible.builtin.command:
+    cmd: ./configure --with-ssl=/usr
+    chdir: /tmp/siege
+  args:
+    creates: /tmp/siege/Makefile
+
+- name: Build Siege
+  ansible.builtin.command:
+    cmd: make
+    chdir: /tmp/siege
+
+- name: Install Siege
+  ansible.builtin.command:
+    cmd: make install
+    chdir: /tmp/siege
+
+- name: Update ldconfig
+  ansible.builtin.command:
+    cmd: ldconfig
+
+- name: Verify Siege installation
+  ansible.builtin.command:
+    cmd: /usr/local/bin/siege --version
+  register: siege_version
+  changed_when: false
+
+- name: Display Siege version
+  ansible.builtin.debug:
+    var: siege_version.stdout_lines

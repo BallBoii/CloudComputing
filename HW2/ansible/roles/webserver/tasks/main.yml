@@ -1,0 +1,61 @@
+---
+# Main tasks for webserver role
+- name: Update system packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: Install required packages
+  ansible.builtin.dnf:
+    name:
+      - httpd
+      - php
+      - php-mysqli
+      - php-xml
+      - php-mbstring
+      - php-cli
+      - mariadb105
+      - tcpdump
+      - emacs
+    state: present
+
+- name: Start and enable Apache
+  ansible.builtin.systemd:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Ensure web root directory exists
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    owner: apache
+    group: apache
+    mode: '0755'
+
+- name: Copy index.php to web server
+  ansible.builtin.copy:
+    src: index.php
+    dest: /var/www/html/index.php
+    owner: apache
+    group: apache
+    mode: '0644'
+  notify: Restart Apache
+
+- name: Copy styles.css to web server
+  ansible.builtin.copy:
+    src: styles.css
+    dest: /var/www/html/styles.css
+    owner: apache
+    group: apache
+    mode: '0644'
+
+- name: Verify Apache is enabled
+  ansible.builtin.command:
+    cmd: systemctl is-enabled httpd
+  register: apache_enabled
+  changed_when: false
+
+- name: Display Apache status
+  ansible.builtin.debug:
+    msg: "Apache enabled: {{ apache_enabled.stdout }}"
