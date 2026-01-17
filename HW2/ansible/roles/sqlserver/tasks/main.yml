@@ -57,6 +57,23 @@
         username VARCHAR(64)
       );
 
+- name: Grant remote access to root user
+  community.mysql.mysql_user:
+    name: root
+    host: '%'
+    password: "{{ mariadb_root_password }}"
+    priv: "{{ db_name }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+  no_log: true
+
+- name: Flush privileges
+  community.mysql.mysql_query:
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+    query: "FLUSH PRIVILEGES"
+
 - name: Display MariaDB status
   ansible.builtin.debug:
     msg: "MariaDB service is enabled: {{ mariadb_enabled.stdout }}"
