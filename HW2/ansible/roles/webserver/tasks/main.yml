@@ -50,6 +50,14 @@
     group: apache
     mode: '0644'
 
+- name: Copy logo to web server
+  ansible.builtin.copy:
+    src: logo_aws_reduced.gif
+    dest: /var/www/html/logo.png
+    owner: apache
+    group: apache
+    mode: '0644'
+
 - name: Verify Apache is enabled
   ansible.builtin.command:
     cmd: systemctl is-enabled httpd

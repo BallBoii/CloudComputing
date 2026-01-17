@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- add mysql connection here -->
                 <?php
                 $conn = new mysqli(
-                    'ec2-3-26-177-71.ap-southeast-2.compute.amazonaws.com',
+                    'ec2-3-25-91-123.ap-southeast-2.compute.amazonaws.com',
                     'root',
                     'strongpassword',
                     'ebdb'
