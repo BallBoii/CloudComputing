@@ -75,6 +75,13 @@ resource "aws_instance" "ansible_server" {
   subnet_id     = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
   
+  # add git
+  user_data = <<-EOF
+              #!/bin/bash
+              dnf update -y
+              dnf install -y git
+              EOF
+
   tags = {
     Name = "Ansible-Server"
   }
