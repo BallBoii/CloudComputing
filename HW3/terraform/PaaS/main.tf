@@ -44,7 +44,7 @@ resource "aws_s3_bucket" "app_versions" {
 
 # Elastic Beanstalk Application
 resource "aws_elastic_beanstalk_application" "app" {
-  name        = "web-application"
+  name        = var.app_name
   description = "Web Application"
 }
 
