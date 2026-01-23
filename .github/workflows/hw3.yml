@@ -43,19 +43,9 @@ jobs:
               working-directory: ./HW3/terraform/PaaS
               run: terraform init
             
-            - name: Terraform Destroy (Clean up previous resources)
+            - name: terraform Import Application
               working-directory: ./HW3/terraform/PaaS
-              env:
-                TF_VAR_region: ${{ env.AWS_REGION }}
-                TF_VAR_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-                TF_VAR_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-                TF_VAR_key_pair: ${{ secrets.KEY_PAIR_NAME }}
-                TF_VAR_DBUser: ${{ secrets.DB_USER }}
-                TF_VAR_DBPassword: ${{ secrets.DB_PASSWORD }}
-                TF_VAR_app_version: "v${{ github.run_number }}"
-                TF_VAR_app_zip_file: "${{ github.workspace }}/myapp.zip"
-              run: terraform destroy -auto-approve
-              continue-on-error: true
+              run: terraform import aws_elastic_beanstalk_application.app web-application
             
             - name: Terraform Plan
               working-directory: ./HW3/terraform/PaaS

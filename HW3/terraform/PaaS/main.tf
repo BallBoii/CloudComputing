@@ -91,6 +91,18 @@ resource "aws_elastic_beanstalk_environment" "web_env" {
     }
 
     setting {
+      namespace = "aws:rds:dbinstance"
+      name      = "DBEngineVersion"
+      value     = "8.0"
+    }
+
+    setting {
+      namespace = "aws:rds:dbinstance"
+      name      = "DBInstanceClass"
+      value     = "db.t3.micro"
+    }
+
+    setting {
         namespace = "aws:rds:dbinstance"
         name      = "DBUser"
         value     = var.DBUser
@@ -106,6 +118,12 @@ resource "aws_elastic_beanstalk_environment" "web_env" {
         namespace = "aws:rds:dbinstance"
         name      = "DBAllocatedStorage"
         value     = "20"
+    }
+
+    setting {
+      namespace = "aws:rds:dbinstance"
+      name      = "DBName"
+      value     = "appdb"
     }
 
     setting {
