@@ -29,3 +29,15 @@ variable "DBPassword" {
   description = "The password for the admin user of RDS instance"
   type = string
 }
+
+variable "app_version" {
+  description = "Application version label"
+  type        = string
+  default     = "v1"
+}
+
+variable "app_zip_file" {
+  description = "Path to the application zip file"
+  type        = string
+  default     = "../../../myapp.zip"
+}

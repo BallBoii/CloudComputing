@@ -36,10 +36,33 @@ data "aws_elastic_beanstalk_solution_stack" "php" {
   name_regex  = "^64bit Amazon Linux (.*) running PHP 8(.*)$"
 }
 
+# S3 Bucket for Application Versions
+resource "aws_s3_bucket" "app_versions" {
+  bucket_prefix = "eb-app-versions-"
+  force_destroy = true
+}
+
 # Elastic Beanstalk Application
 resource "aws_elastic_beanstalk_application" "app" {
   name        = "web-application"
   description = "Web Application"
+}
+
+# Upload Application Version to S3
+resource "aws_s3_object" "app_version" {
+  bucket = aws_s3_bucket.app_versions.id
+  key    = "${var.app_version}/myapp.zip"
+  source = var.app_zip_file
+  etag   = filemd5(var.app_zip_file)
+}
+
+# Elastic Beanstalk Application Version
+resource "aws_elastic_beanstalk_application_version" "app_version" {
+  name        = var.app_version
+  application = aws_elastic_beanstalk_application.app.name
+  description = "Application version ${var.app_version}"
+  bucket      = aws_s3_bucket.app_versions.id
+  key         = aws_s3_object.app_version.id
 }
 
 # Elastic Beanstalk Environment
@@ -47,6 +70,7 @@ resource "aws_elastic_beanstalk_environment" "web_env" {
     name                = "web-app-env"
     application         = aws_elastic_beanstalk_application.app.name
     solution_stack_name = data.aws_elastic_beanstalk_solution_stack.php.name
+    version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
     setting {
       namespace = "aws:elasticbeanstalk:environment"

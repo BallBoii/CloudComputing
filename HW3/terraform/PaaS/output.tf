@@ -46,3 +46,14 @@ output "database_endpoint" {
   description = "RDS database endpoint (available after environment is created)"
   value       = aws_elastic_beanstalk_environment.web_env.endpoint_url
 }
+
+# Application Version
+output "app_version" {
+  description = "Deployed application version"
+  value       = aws_elastic_beanstalk_application_version.app_version.name
+}
+
+output "s3_bucket" {
+  description = "S3 bucket for application versions"
+  value       = aws_s3_bucket.app_versions.id
+}
