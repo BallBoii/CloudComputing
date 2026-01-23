@@ -30,12 +30,6 @@ variable "DBPassword" {
   type = string
 }
 
-variable "app_name" {
-  description = "Elastic Beanstalk application name"
-  type        = string
-  default     = "web-application"
-}
-
 variable "app_version" {
   description = "Application version label"
   type        = string

@@ -44,7 +44,7 @@ resource "aws_s3_bucket" "app_versions" {
 
 # Elastic Beanstalk Application
 resource "aws_elastic_beanstalk_application" "app" {
-  name        = var.app_name
+  name        = "web-application"
   description = "Web Application"
 }
 
@@ -62,7 +62,7 @@ resource "aws_elastic_beanstalk_application_version" "app_version" {
   application = aws_elastic_beanstalk_application.app.name
   description = "Application version ${var.app_version}"
   bucket      = aws_s3_bucket.app_versions.id
-  key         = aws_s3_object.app_version.id
+  key         = aws_s3_object.app_version.key
 }
 
 # Elastic Beanstalk Environment

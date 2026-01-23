@@ -17,7 +17,9 @@ jobs:
             
             - name: Create application zip
               run: |
-                  git archive -v -o myapp.zip --format=zip HEAD
+                  cd HW3
+                  zip -j ../myapp.zip index.php styles.css logo_aws_reduced.gif
+                  cd ..
             
             - name: Upload artifact
               uses: actions/upload-artifact@v4
@@ -50,7 +52,6 @@ jobs:
                 TF_VAR_key_pair: ${{ secrets.KEY_PAIR_NAME }}
                 TF_VAR_DBUser: ${{ secrets.DB_USER }}
                 TF_VAR_DBPassword: ${{ secrets.DB_PASSWORD }}
-                TF_VAR_app_name: "web-app-${{ github.run_number }}"
                 TF_VAR_app_version: "v${{ github.run_number }}"
                 TF_VAR_app_zip_file: "${{ github.workspace }}/myapp.zip"
               run: terraform plan
@@ -64,7 +65,6 @@ jobs:
                 TF_VAR_key_pair: ${{ secrets.KEY_PAIR_NAME }}
                 TF_VAR_DBUser: ${{ secrets.DB_USER }}
                 TF_VAR_DBPassword: ${{ secrets.DB_PASSWORD }}
-                TF_VAR_app_name: "web-app-${{ github.run_number }}"
                 TF_VAR_app_version: "v${{ github.run_number }}"
                 TF_VAR_app_zip_file: "${{ github.workspace }}/myapp.zip"
               run: terraform apply -auto-approve
