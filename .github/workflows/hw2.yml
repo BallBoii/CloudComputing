@@ -2,11 +2,21 @@ name: HW2 - Deploy Infrastructure and Configure with Ansible
 
 on:
   workflow_dispatch:
+    inputs: 
+      siege_ip:
+        description: 'Siege Server IP Address'
+        required: true
+      web_ip:
+        description: 'Web Server IP Address'
+        required: true
+      sql_ip:
+        description: 'SQL Server IP Address'
+        required: true
 
 env:
-    SIEGE_IP: ${{ secrets.SIEGE_IP_HW2 }}
-    WEB_IP: ${{ secrets.WEB_IP_HW2 }}
-    SQL_IP: ${{ secrets.SQL_IP_HW2 }}
+    SIEGE_IP: ${{ inputs.siege_ip }}
+    WEB_IP: ${{ inputs.web_ip }}
+    SQL_IP: ${{ inputs.sql_ip }}
     AWS_REGION: ap-southeast-2
 
 jobs:
