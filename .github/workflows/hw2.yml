@@ -31,7 +31,7 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/ansibleSSH.pem
+          echo "${{ secrets.BALLY }}" > ~/.ssh/ansibleSSH.pem
           chmod 600 ~/.ssh/ansibleSSH.pem
           
       - name: Test SSH Connectivity
