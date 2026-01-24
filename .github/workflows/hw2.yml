@@ -33,12 +33,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.BALLY }}" > ~/.ssh/ansibleSSH.pem
           chmod 600 ~/.ssh/ansibleSSH.pem
-          
-      - name: Test SSH Connectivity
-        run: |
-          ssh -i ~/.ssh/ansibleSSH.pem -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${{ env.SIEGE_IP }} "echo 'Siege server connected'" || echo "Siege connection failed"
-          ssh -i ~/.ssh/ansibleSSH.pem -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${{ env.WEB_IP }} "echo 'Web server connected'" || echo "Web connection failed"
-          ssh -i ~/.ssh/ansibleSSH.pem -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${{ env.SQL_IP }} "echo 'SQL server connected'" || echo "SQL connection failed"
 
       - name: Generate Ansible Inventory
         run: |
