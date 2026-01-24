@@ -5,12 +5,6 @@
     name: "*"
     state: latest
 
-- name: Install Development Tools group
-  ansible.builtin.dnf:
-    name: "@Development Tools"
-    state: present
-  ignore_errors: yes
-
 - name: Install required packages for Siege
   ansible.builtin.dnf:
     name:
