@@ -1,15 +1,14 @@
-output "public_ip_1" {
-    value =  "Your Ec2 IP is : ${aws_instance.siege_server.public_ip}"
+output "siege_ip" {
+    value       = aws_instance.siege_server.public_ip
+    description = "Public IP of the Siege server"
 }
 
-output "public_ip_2" {
-    value =  "Your Ec2 IP is : ${aws_instance.web_server.public_ip}"
+output "web_ip" {
+    value       = aws_instance.web_server.public_ip
+    description = "Public IP of the Web server"
 }
 
-output "public_ip_3" {
-    value =  "Your Ec2 IP is : ${aws_instance.sql_server.public_ip}"
-}
-
-output "ansible_ip" {
-    value =  "Your Ec2 IP is : ${aws_instance.ansible_server.public_ip}"
+output "sql_ip" {
+    value       = aws_instance.sql_server.public_ip
+    description = "Public IP of the SQL server"
 }  

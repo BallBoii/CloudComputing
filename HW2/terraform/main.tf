@@ -68,25 +68,6 @@ resource "aws_instance" "sql_server" {
   }
 }
 
-resource "aws_instance" "ansible_server" {
-  ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = var.instance_type
-  key_name      = var.key_pair
-  subnet_id     = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
-  
-  # add git
-  user_data = <<-EOF
-              #!/bin/bash
-              dnf update -y
-              dnf install -y git
-              EOF
-
-  tags = {
-    Name = "Ansible-Server"
-  }
-}
-
 # Get default VPC
 data "aws_vpc" "default" {
   default = true
