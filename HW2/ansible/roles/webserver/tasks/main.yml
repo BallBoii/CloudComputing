@@ -15,8 +15,6 @@
       - php-mbstring
       - php-cli
       - mariadb105
-      - tcpdump
-      - emacs
     state: present
 
 - name: Start and enable Apache
