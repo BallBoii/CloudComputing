@@ -37,7 +37,7 @@ resource "aws_instance" "siege_server" {
   instance_type = var.instance_type
   key_name      = var.key_pair
   subnet_id     = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh_hw2.id]
 
   tags = {
     Name = "Siege-Server"
@@ -49,7 +49,7 @@ resource "aws_instance" "web_server" {
   instance_type = var.instance_type
   key_name      = var.key_pair
   subnet_id     = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh_hw2.id]
 
   tags = {
     Name = "Web-Server"
@@ -61,7 +61,7 @@ resource "aws_instance" "sql_server" {
   instance_type = var.instance_type
   key_name      = var.key_pair
   subnet_id     = data.aws_subnets.default.ids[0]
-  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh_hw2.id]
 
   tags = {
     Name = "SQL-Server"
@@ -81,8 +81,8 @@ data "aws_subnets" "default" {
 }
 
 # Security Group Resource
-resource "aws_security_group" "allow_http_ssh" {
-  name        = "allow_http_ssh"
+resource "aws_security_group" "allow_http_ssh_hw2" {
+  name        = "allow_http_ssh_hw2"
   description = "Allow HTTP and SSH inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
@@ -127,7 +127,7 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 
   tags = {
-    Name = "allow_http_ssh"
+    Name = "allow_http_ssh_hw2"
   }
 
 }
