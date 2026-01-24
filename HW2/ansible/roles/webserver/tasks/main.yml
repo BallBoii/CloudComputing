@@ -32,8 +32,8 @@
     mode: '0755'
 
 - name: Copy index.php to web server
-  ansible.builtin.copy:
-    src: index.php
+  ansible.builtin.template:
+    src: index.php.j2
     dest: /var/www/html/index.php
     owner: apache
     group: apache
