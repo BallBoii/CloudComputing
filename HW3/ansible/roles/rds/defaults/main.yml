@@ -1,0 +1,5 @@
+---
+# Default variables for sqlserver role
+mariadb_root_password: "strongpassword"  # Should be overridden with Ansible Vault
+db_name: "ebdb"
+db_table: "user"

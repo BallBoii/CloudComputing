@@ -65,9 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- add mysql connection here -->
                 <?php
                 $conn = new mysqli(
-                    $_SERVER['RDS_HOSTNAME'],
-                    $_SERVER['RDS_USERNAME'],
-                    $_SERVER['RDS_PASSWORD'],
+                    'awseb-e-jamiznpqh6-stack-awsebrdsdatabase-juvookp52okb.c504ecg4ga3q.ap-southeast-2.rds.amazonaws.com',
+                    'admin',
+                    'strongpassword',
                     'ebdb'
                 );
                 // Check connection

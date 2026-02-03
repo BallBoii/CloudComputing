@@ -35,9 +35,3 @@ variable "app_version" {
   type        = string
   default     = "v1"
 }
-
-variable "app_zip_file" {
-  description = "Path to the application zip file"
-  type        = string
-  default     = "../../../myapp.zip"
-}

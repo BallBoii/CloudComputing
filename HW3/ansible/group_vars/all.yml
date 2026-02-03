@@ -1,0 +1,7 @@
+---
+# Common variables for all hosts
+ansible_user: ec2-user
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+# SQL Server IP - will be set dynamically
+sql_server_ip: "{{ hostvars[groups['sql'][0]]['ansible_ssh_host'] }}"
