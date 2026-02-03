@@ -1,0 +1,6 @@
+---
+- name: Configure Siege Server
+  hosts: siege
+  become: yes
+  roles:
+    - siege

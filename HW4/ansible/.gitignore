@@ -1,0 +1,17 @@
+# Sensitive files
+.env
+
+# Ansible
+*.retry
+*.pyc
+__pycache__/
+
+# SSH Keys
+*.pem
+*.key
+
+# Inventory cache
+.ansible/
+
+# Logs
+*.log
