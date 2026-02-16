@@ -1,0 +1,66 @@
+---
+# Main tasks for webserver role
+- name: Update system packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+
+- name: Install required packages
+  ansible.builtin.dnf:
+    name:
+      - httpd
+      - php
+      - php-mysqli
+      - php-xml
+      - php-mbstring
+      - php-cli
+      - mariadb105
+    state: present
+
+- name: Start and enable Apache
+  ansible.builtin.systemd:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: Install unzip package
+  ansible.builtin.dnf:
+    name: unzip
+    state: present
+
+- name: Download WordPress
+  ansible.builtin.shell:
+    cmd: |
+      cd /var/www/html
+      wget https://wordpress.org/latest.zip
+      unzip latest.zip
+      mv wordpress/* .
+      rm -rf wordpress latest.zip
+    creates: /var/www/html/wp-config-sample.php
+
+- name: Create wp-config.php from sample
+  ansible.builtin.copy:
+    src: /var/www/html/wp-config-sample.php
+    dest: /var/www/html/wp-config.php
+    remote_src: yes
+    owner: apache
+    group: apache
+    mode: '0644'
+    force: no
+
+- name: Configure database connection in wp-config.php
+  ansible.builtin.lineinfile:
+    path: /var/www/html/wp-config.php
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: yes
+  loop:
+    - regexp: "define\\(\\s*'DB_NAME',\\s*'.*'\\s*\\);"
+      line: "define( 'DB_NAME', '{{ db_name }}' );"
+    - regexp: "define\\(\\s*'DB_USER',\\s*'.*'\\s*\\);"
+      line: "define( 'DB_USER', '{{ db_user }}' );"
+    - regexp: "define\\(\\s*'DB_PASSWORD',\\s*'.*'\\s*\\);"
+      line: "define( 'DB_PASSWORD', '{{ db_password }}' );"
+    - regexp: "define\\(\\s*'DB_HOST',\\s*'.*'\\s*\\);"
+      line: "define( 'DB_HOST', '{{ db_host }}' );"
+  notify: Restart Apache

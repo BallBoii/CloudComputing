@@ -1,0 +1,11 @@
+---
+# Default variables for wordpress role
+wordpress_version: "latest"
+wordpress_download_url: "https://wordpress.org/latest.tar.gz"
+wordpress_install_dir: "/var/www/html"
+
+# Database connection settings
+db_host: "{{ hostvars[groups['sql'][0]]['ansible_ssh_host'] }}"
+db_name: "ebdb"
+db_user: "root"
+db_password: "strongpassword"

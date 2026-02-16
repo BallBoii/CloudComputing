@@ -1,0 +1,7 @@
+---
+# Master playbook to configure all servers using roles
+- name: Configure Web Server
+  hosts: wordpress
+  become: yes
+  roles:
+    - wordpress
