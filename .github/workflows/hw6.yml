@@ -6,9 +6,13 @@ on:
       wordpress_ip:
         description: 'Wordpress Server IP Address'
         required: true
+      sql_ip:
+        description: 'SQL Server IP Address'
+        required: true  
 
 env:
     WORDPRESS_IP: ${{ inputs.wordpress_ip }}
+    SQL_IP: ${{ inputs.sql_ip }}
     AWS_REGION: ap-southeast-2
 
 jobs:
@@ -41,6 +45,9 @@ jobs:
           cat > HW6/ansible/inventories/hosts.ini << EOF
           [wordpress]
           wordpress1 ansible_ssh_host=${{ env.WORDPRESS_IP }}
+
+          [sql]
+          sql1 ansible_ssh_host=${{ env.SQL_IP }}
 
           EOF
 
