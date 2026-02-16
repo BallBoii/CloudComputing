@@ -45,7 +45,7 @@ jobs:
           EOF
 
       - name: Display Inventory
-        run: cat HW6/ansible/inventories/production/hosts.ini
+        run: cat HW6/ansible/inventories/hosts.ini
 
       - name: Run Ansible Playbook
         working-directory: HW6/ansible
