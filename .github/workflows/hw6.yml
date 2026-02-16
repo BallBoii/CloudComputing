@@ -1,14 +1,14 @@
-name: Configure Siege Server with Ansible
+name: Configure Wordpress Server with Ansible
 
 on:
   workflow_dispatch:
     inputs: 
-      siege_ip:
-        description: 'Siege Server IP Address'
+      wordpress_ip:
+        description: 'Wordpress Server IP Address'
         required: true
 
 env:
-    SIEGE_IP: ${{ inputs.siege_ip }}
+    WORDPRESS_IP: ${{ inputs.wordpress_ip }}
     AWS_REGION: ap-southeast-2
 
 jobs:
@@ -38,23 +38,23 @@ jobs:
 
       - name: Generate Ansible Inventory
         run: |
-          cat > HW4/ansible/inventories/production/hosts.ini << EOF
-          [siege]
-          siege1 ansible_ssh_host=${{ env.SIEGE_IP }}
+          cat > HW6/ansible/inventories/hosts.ini << EOF
+          [wordpress]
+          wordpress1 ansible_ssh_host=${{ env.WORDPRESS_IP }}
 
           EOF
 
       - name: Display Inventory
-        run: cat HW4/ansible/inventories/production/hosts.ini
+        run: cat HW6/ansible/inventories/production/hosts.ini
 
       - name: Run Ansible Playbook
-        working-directory: HW4/ansible
+        working-directory: HW6/ansible
         run: |
-          ansible-playbook -i inventories/production/hosts.ini site.yml
+          ansible-playbook -i inventories/hosts.ini site.yml
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
       - name: Display Server Information
         run: |
           echo "=== Deployment Complete ==="
-          echo "Siege Server: ${{ env.SIEGE_IP }}"
+          echo "Wordpress Server: http://${{ env.WORDPRESS_IP }}"
