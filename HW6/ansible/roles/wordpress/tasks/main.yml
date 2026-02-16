@@ -29,14 +29,30 @@
     state: present
 
 - name: Download WordPress
+  ansible.builtin.get_url:
+    url: https://wordpress.org/latest.zip
+    dest: /var/www/html/latest.zip
+    mode: '0644'
+
+- name: Unzip WordPress
+  ansible.builtin.unarchive:
+    src: /var/www/html/latest.zip
+    dest: /var/www/html/
+    remote_src: yes
+    creates: /var/www/html/wordpress/wp-config-sample.php
+
+- name: Move WordPress files to web root
   ansible.builtin.shell:
     cmd: |
-      cd /var/www/html
-      wget https://wordpress.org/latest.zip
-      unzip latest.zip
-      mv wordpress/* .
-      rm -rf wordpress latest.zip
+      shopt -s dotglob
+      mv /var/www/html/wordpress/* /var/www/html/
+      rmdir /var/www/html/wordpress
     creates: /var/www/html/wp-config-sample.php
+
+- name: Remove WordPress zip file
+  ansible.builtin.file:
+    path: /var/www/html/latest.zip
+    state: absent
 
 - name: Create wp-config.php from sample
   ansible.builtin.copy:
